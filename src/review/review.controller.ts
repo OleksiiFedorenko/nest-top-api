@@ -1,14 +1,43 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { Review } from './schemas/review.schema';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { ReviewService } from './review.service';
+import { CreateReviewDto } from './dto/create-review.dto';
+import { REVIEW_NOT_FOUND } from './review.constants';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('review')
 export class ReviewController {
-  @Post('create')
-  async create(@Body() dto: Omit<Review, '_id'>) {}
+  constructor(private readonly reviewService: ReviewService) {}
 
+  @UsePipes(new ValidationPipe())
+  @Post('create')
+  async create(@Body() dto: CreateReviewDto) {
+    return this.reviewService.create(dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string) {}
+  async delete(@Param('id') id: string) {
+    const removedReview = await this.reviewService.delete(id);
+    if (!removedReview) {
+      throw new HttpException(REVIEW_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return removedReview;
+  }
 
   @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: string) {}
+  async getByProduct(@Param('productId') productId: string) {
+    return this.reviewService.findByProductId(productId);
+  }
 }

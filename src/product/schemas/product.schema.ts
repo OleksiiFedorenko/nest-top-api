@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-class ProductCharacteristic {
+export class ProductCharacteristic {
   @Prop()
   name: string;
 

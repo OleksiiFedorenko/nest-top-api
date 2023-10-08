@@ -7,7 +7,7 @@ export enum TopLevelCategory {
   Products,
 }
 
-export class HhData {
+export class DouData {
   @Prop()
   count: number;
 
@@ -61,10 +61,10 @@ export class Page {
   @Prop()
   category: string;
 
-  @Prop({ type: HhData })
-  hh?: HhData;
+  @Prop({ type: DouData })
+  dou?: DouData;
 
-  @Prop({ type: [PageAdvantage] })
+  @Prop([PageAdvantage])
   advantages: PageAdvantage[];
 
   @Prop()
