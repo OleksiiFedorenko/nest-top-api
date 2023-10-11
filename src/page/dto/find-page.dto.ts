@@ -1,5 +1,7 @@
+import { IsEnum } from 'class-validator';
 import { TopLevelCategory } from '../schemas/page.schema';
 
 export class FindPageDto {
-  category: TopLevelCategory;
+  @IsEnum(TopLevelCategory)
+  firstCategory: TopLevelCategory;
 }
