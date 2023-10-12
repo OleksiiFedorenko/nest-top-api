@@ -77,4 +77,14 @@ export class Page {
   tags: string[];
 }
 
-export const PageSchema = SchemaFactory.createForClass(Page);
+export const PageSchema = SchemaFactory.createForClass(Page).index({
+  // To search in all fields
+  '$**': 'text',
+});
+
+// export const PageSchema = SchemaFactory.createForClass(Page).index({
+// To search in certain fields
+//   title: 'text',
+//   seoText: 'text',
+//   advantages: 'text',
+// });

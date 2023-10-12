@@ -71,4 +71,9 @@ export class PageController {
   async find(@Body() { firstCategory }: FindPageDto) {
     return this.pageService.findByCategory(firstCategory);
   }
+
+  @Get('textSearch/:text')
+  async textSearch(@Param('text') text: string) {
+    return this.pageService.findByText(text);
+  }
 }

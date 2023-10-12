@@ -24,10 +24,43 @@ export class PageService {
 
   async findByCategory(firstCategory: TopLevelCategory) {
     return this.pageModel
-      .find(
-        { firstCategory },
-        { alias: 1, firstCategory: 1, secondCategory: 1, title: 1 },
-      )
+      .aggregate()
+      .match({ firstCategory })
+      .group({
+        _id: { secondCategory: '$secondCategory' },
+        pages: { $push: { alias: '$alias', title: '$title' } },
+      })
+      .exec();
+  }
+
+  // Different syntax
+  // async findByCategory(firstCategory: TopLevelCategory) {
+  //   return this.pageModel
+  //     .aggregate([
+  //       { $match: { firstCategory } },
+  //       {
+  //         $group: {
+  //           _id: { secondCategory: '$secondCategory' },
+  //           pages: { $push: { alias: '$alias', title: '$title' } },
+  //         },
+  //       },
+  //     ])
+  //     .exec();
+  // }
+
+  // Flat search (not nested)
+  // async findByCategory(firstCategory: TopLevelCategory) {
+  //   return this.pageModel
+  //     .find(
+  //       { firstCategory },
+  //       { alias: 1, firstCategory: 1, secondCategory: 1, title: 1 },
+  //     )
+  //     .exec();
+  // }
+
+  async findByText(text: string) {
+    return this.pageModel
+      .find({ $text: { $search: text, $caseSensitive: false } })
       .exec();
   }
 

@@ -1,0 +1,10 @@
+version: '3'
+service:
+  top.api:
+    image: nest-top-api:latest
+    container_name: nest-top-api
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./.env:/app/.env
