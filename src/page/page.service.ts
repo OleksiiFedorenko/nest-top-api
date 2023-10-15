@@ -14,6 +14,10 @@ export class PageService {
     return this.pageModel.create(dto);
   }
 
+  async findAll(): Promise<Page[] | null> {
+    return this.pageModel.find({}).exec();
+  }
+
   async findById(id: string): Promise<Page | null> {
     return this.pageModel.findById(id).exec();
   }

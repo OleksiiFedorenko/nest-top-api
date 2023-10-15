@@ -75,6 +75,10 @@ export class Page {
 
   @Prop([String])
   tags: string[];
+
+  // fix for sitemap
+  @Prop()
+  updatedAt: string;
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page).index({

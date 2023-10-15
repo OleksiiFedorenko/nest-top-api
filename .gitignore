@@ -1,10 +1,10 @@
 # compiled output
 /dist
 /node_modules
-
-# Envs
 .env
 *.env
+/uploads
+/table-tests
 
 # Logs
 logs
