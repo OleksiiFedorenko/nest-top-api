@@ -10,9 +10,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { getMongoConfig } from './configs/mongo.config';
 import { FilesModule } from './files/files.module';
 import { SitemapModule } from './sitemap/sitemap.module';
+import { DouModule } from './dou/dou.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -25,6 +28,7 @@ import { SitemapModule } from './sitemap/sitemap.module';
     ReviewModule,
     FilesModule,
     SitemapModule,
+    DouModule,
   ],
   controllers: [AppController],
   providers: [AppService],

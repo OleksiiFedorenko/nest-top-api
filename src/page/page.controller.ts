@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -12,17 +13,22 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Page } from './schemas/page.schema';
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { FindPageDto } from './dto/find-page.dto';
 import { IdValidationPipe } from 'src/pipes/id-validation.pipe';
 import { PAGE_NOT_FOUND_ERROR } from './page.constants';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { DouService } from 'src/dou/dou.service';
+import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 
 @Controller('page')
 export class PageController {
-  constructor(private readonly pageService: PageService) {}
+  constructor(
+    private readonly pageService: PageService,
+    private readonly douService: DouService,
+    private readonly schedulerRegistry: SchedulerRegistry,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
@@ -75,5 +81,29 @@ export class PageController {
   @Get('textSearch/:text')
   async textSearch(@Param('text') text: string) {
     return this.pageService.findByText(text);
+  }
+
+  // @Cron('0 0 * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, { name: 'test' })
+  async test() {
+    // TO GET MANUAL CONTROL OF CRON
+    // const job = this.schedulerRegistry.getCronJob('test');
+    const data = await this.pageService.findForDouUpdate(new Date());
+    if (!data) return;
+    for (let page of data) {
+      console.log(page);
+      const douData = await this.douService.getData(page.category);
+      Logger.log(douData);
+      page.dou = douData;
+      // to get some timeout
+      // await this.sleep();
+      await this.pageService.updateById(page._id, page);
+    }
+  }
+
+  sleep() {
+    return new Promise<void>((res, rej) => {
+      setTimeout(() => res(), 1000);
+    });
   }
 }

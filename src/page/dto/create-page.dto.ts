@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsNotEmpty,
   Validate,
+  IsDate,
 } from 'class-validator';
 import { TopLevelCategory } from '../schemas/page.schema';
 import { IsAliasUnique } from '../validators/is-alias-unique.validator';
@@ -24,6 +25,9 @@ export class DouDataDto {
 
   @IsNumber()
   seniorSalary: number;
+
+  @IsDate()
+  updatedAt: Date;
 }
 
 export class PageAdvantageDto {

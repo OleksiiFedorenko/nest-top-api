@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Page, TopLevelCategory } from './schemas/page.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreatePageDto } from './dto/create-page.dto';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export class PageService {
@@ -72,7 +73,22 @@ export class PageService {
     return this.pageModel.findByIdAndDelete(id).exec();
   }
 
-  async updateById(id: string, dto: CreatePageDto): Promise<Page | null> {
+  async updateById(
+    id: string | Types.ObjectId,
+    dto: CreatePageDto,
+  ): Promise<Page | null> {
     return this.pageModel.findByIdAndUpdate(id, dto, { new: true }).exec();
+  }
+
+  async findForDouUpdate(date: Date): Promise<Page[] | null> {
+    return this.pageModel
+      .find({
+        firstCategory: 1,
+        $or: [
+          { 'dou.updatedAt': { $exists: false } },
+          { 'dou.updatedAt': { $lt: addDays(date, -1) } },
+        ],
+      })
+      .exec();
   }
 }

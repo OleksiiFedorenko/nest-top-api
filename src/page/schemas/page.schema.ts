@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export enum TopLevelCategory {
   Courses,
@@ -19,6 +20,9 @@ export class DouData {
 
   @Prop()
   seniorSalary: number;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export class PageAdvantage {
@@ -42,7 +46,7 @@ export class PageAdvantage {
 //   SchemaFactory.createForClass(PageAdvantageSchema);
 
 @Schema({ timestamps: true })
-export class Page {
+export class Page extends Document {
   // @Prop()
   // _id: string;
 

@@ -3,6 +3,7 @@ import { PageController } from './page.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Page, PageSchema } from './schemas/page.schema';
 import { PageService } from './page.service';
+import { DouModule } from 'src/dou/dou.module';
 
 @Module({
   controllers: [PageController],
@@ -13,6 +14,7 @@ import { PageService } from './page.service';
         schema: PageSchema,
       },
     ]),
+    DouModule,
   ],
   providers: [PageService],
   exports: [PageService],
